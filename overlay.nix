@@ -15,4 +15,10 @@ overlayed
   libkrun = final.callPackage ./libkrun.nix { };
   mesa-asahi-edge = final.callPackage ./mesa.nix { inherit (overlayed) mesa-asahi-edge; };
   muvm = final.callPackage ./muvm.nix { };
+  fex = final.callPackage ./fex.nix { };
+  fex-x86_64-rootfs = final.runCommand "fex-rootfs" { nativeBuildInputs = [ final.erofs-utils ]; } ''
+    mkdir -p rootfs/run/opengl-driver
+    cp -R "${final.pkgsCross.gnu64.mesa-asahi-edge}"/* rootfs/run/opengl-driver/
+    mkfs.erofs $out rootfs/
+  '';
 }

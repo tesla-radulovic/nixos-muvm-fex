@@ -29,6 +29,8 @@
         inherit (pkgs')
           mesa-asahi-edge
           muvm
+          fex
+          fex-x86_64-rootfs
           ;
         mesa-x86_64-linux = pkgs'.pkgsCross.gnu64.mesa-asahi-edge;
       };

@@ -13,10 +13,15 @@
   pkg-config,
   procps,
   socat,
-  writeShellScript,
   coreutils,
   fex,
   withFex ? stdenv.isAarch64,
+  fex-x86_64-rootfs,
+  fexRootFS ? if withFex then fex-x86_64-rootfs else null,
+  findutils,
+  util-linux,
+  writeShellApplication,
+  fuse,
 }:
 let
   binPath = lib.makeBinPath (
@@ -29,19 +34,43 @@ let
     ++ lib.optionals withFex [ fex ]
   );
 
-  initScript = writeShellScript "muvm-init" ''
-    ${lib.getExe' coreutils "ln"} -s /run/muvm-host/run/opengl-driver /run/opengl-driver
-    ${lib.getExe' coreutils "ln"} -s /run/muvm-host/run/current-system /run/current-system
-  '';
+  initScript = writeShellApplication {
+    name = "muvm-init";
+    runtimeInputs = [
+      coreutils
+      util-linux
+      findutils
+    ];
+    text = ''
+      for d in opengl-driver current-system; do
+        ln -s /run/muvm-host/run/$d /run/$d
+      done
 
-  wrapperArgs = lib.escapeShellArgs [
-    "--prefix"
-    "PATH"
-    ":"
-    binPath
-    "--add-flags"
-    "--execute-pre ${initScript}"
-  ];
+      # Set up fusermount suid wrapper. Needed for FEX
+      mkdir -p /run/wrappers
+      mount -t tmpfs -o exec,suid tmpfs /run/wrappers
+      mkdir -p /run/wrappers/bin
+      cp "${lib.getExe' fuse "fusermount"}" /run/wrappers/bin/fusermount
+      chown root:root /run/wrappers/bin/fusermount
+      chmod u=srx,g=x,o=x /run/wrappers/bin/fusermount
+    '';
+  };
+
+  wrapperArgs = lib.escapeShellArgs (
+    [
+      "--prefix"
+      "PATH"
+      ":"
+      binPath
+      "--add-flags"
+      "--execute-pre=${lib.getExe initScript}"
+    ]
+    ++ lib.optionals (withFex && fexRootFS != null) [
+      # TODO: Doesn't actually currently work
+      "--add-flags"
+      "--fex-image=${fexRootFS}"
+    ]
+  );
 in
 assert lib.assertMsg (withFex -> stdenv.isAarch64) "FEX only support aarch64 hosts";
 rustPlatform.buildRustPackage rec {
@@ -64,6 +93,9 @@ rustPlatform.buildRustPackage rec {
       
     substituteInPlace crates/muvm/src/monitor.rs \
       --replace-fail "/sbin/sysctl" "${procps}/bin/sysctl"
+
+    substituteInPlace crates/muvm/src/guest/mount.rs \
+      --replace-fail "/usr/share/fex-emu" "${fex}/share/fex-emu"
   '';
 
   nativeBuildInputs = [
