@@ -22,6 +22,8 @@
   util-linux,
   writeShellApplication,
   fuse,
+  mesa-x86_64-linux,
+  hardcodedMesa ? withFex,
 }:
 let
   binPath = lib.makeBinPath (
@@ -34,6 +36,7 @@ let
     ++ lib.optionals withFex [ fex ]
   );
 
+  mesaDir = if hardcodedMesa then mesa-x86_64-linux else "/run/muvm-host/run/opengl-driver";
   initScript = writeShellApplication {
     name = "muvm-init";
     runtimeInputs = [
@@ -42,9 +45,8 @@ let
       findutils
     ];
     text = ''
-      for d in opengl-driver current-system; do
-        ln -s /run/muvm-host/run/$d /run/$d
-      done
+      ln -s /run/muvm-host/run/current-system /run/current-system
+      ln -s ${mesaDir} /run/opengl-driver
 
       # Set up fusermount suid wrapper. Needed for FEX
       mkdir -p /run/wrappers

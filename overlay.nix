@@ -14,7 +14,7 @@ overlayed
   });
   libkrun = final.callPackage ./libkrun.nix { };
   mesa-asahi-edge = final.callPackage ./mesa.nix { inherit (overlayed) mesa-asahi-edge; };
-  muvm = final.callPackage ./muvm.nix { };
+  muvm = final.callPackage ./muvm.nix { mesa-x86_64-linux = final.pkgsCross.gnu64.mesa-asahi-edge; };
   fex = final.callPackage ./fex.nix { };
   fex-x86_64-rootfs = final.runCommand "fex-rootfs" { nativeBuildInputs = [ final.erofs-utils ]; } ''
     mkdir -p rootfs/run/opengl-driver
