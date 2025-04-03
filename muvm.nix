@@ -83,7 +83,7 @@ rustPlatform.buildRustPackage rec {
     owner = "AsahiLinux";
     repo = pname;
     rev = "refs/pull/158/merge";
-    hash = "sha256-egZT9w+tj97d8uVuEPhj5y+2EhH04q1Rgfw3s7njysw=";
+    hash = "sha256-c7koZaYUZT5/Q+29fLHDRf6bXsnGkq2464sXp20buKA=";
   };
 
   useFetchCargoVendor = true;
