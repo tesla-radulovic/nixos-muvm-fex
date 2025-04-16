@@ -1,6 +1,5 @@
-{ nixos-apple-silicon-overlay }:
 let
-  # This overlay assumes all previous overlays have been applied
+  # This overlay assumes all previous required overlays have been applied
   overlay = final: prev: {
     virglrenderer = prev.virglrenderer.overrideAttrs (old: {
       src = final.fetchurl {
@@ -19,6 +18,9 @@ let
       mkfs.erofs $out rootfs/
     '';
   };
+
+  inputs = import ./inputs.nix;
+  nixos-apple-silicon-overlay = import "${inputs.nixos-apple-silicon}/apple-silicon-support/packages/overlay.nix";
 
   overlays = [
     nixos-apple-silicon-overlay

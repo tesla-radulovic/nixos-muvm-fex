@@ -5,21 +5,22 @@
     };
     nixos-apple-silicon = {
       url = "github:yuyuyureka/nixos-apple-silicon/minimize-patches";
-      inputs.nixpkgs.follows = "nixpkgs";
+      flake = false;
+    };
+    __flake-compat = {
+      url = "git+https://git.lix.systems/lix-project/flake-compat.git";
+      flake = false;
     };
   };
 
   outputs =
     {
       nixpkgs,
-      nixos-apple-silicon,
-      self,
+      ...
     }:
     let
       pkgs = nixpkgs.legacyPackages.aarch64-linux;
-      overlay = import ./overlay.nix {
-        nixos-apple-silicon-overlay = nixos-apple-silicon.overlays.apple-silicon-overlay;
-      };
+      overlay = import ./overlay.nix;
       pkgs' = pkgs.extend overlay;
     in
     {

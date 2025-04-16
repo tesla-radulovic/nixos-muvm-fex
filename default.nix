@@ -1,13 +1,7 @@
 let
-  lock = builtins.fromJSON (builtins.readFile ./flake.lock);
-  inherit (lock.nodes.__flake-compat.locked) narHash rev url;
-  flake-compat = builtins.fetchTarball {
-    url = "${url}/archive/${rev}.tar.gz";
-    sha256 = narHash;
-  };
-  flake = import flake-compat { src = ./.; };
+  inputs = import ./inputs.nix;
 in
 {
-  pkgs ? flake.inputs.legacyPackages.aarch64-linux,
+  pkgs ? inputs.nixpkgs.legacyPackages.aarch64-linux,
 }:
-pkgs.extend flake.inputs.self.overlays.default
+pkgs.extend (import ./overlay.nix)
