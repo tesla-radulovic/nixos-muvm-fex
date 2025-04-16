@@ -10,7 +10,7 @@ let
     });
     libkrun = final.callPackage ./libkrun.nix { };
     mesa-asahi-edge = final.callPackage ./mesa.nix { inherit (prev) mesa-asahi-edge; };
-    muvm = final.callPackage ./muvm.nix { mesa-x86_64-linux = final.pkgsCross.gnu64.mesa-asahi-edge; };
+    muvm = final.callPackage ./muvm.nix { inherit (prev) muvm; mesa-x86_64-linux = final.pkgsCross.gnu64.mesa-asahi-edge; };
     fex = final.callPackage ./fex.nix { };
     fex-x86_64-rootfs = final.runCommand "fex-rootfs" { nativeBuildInputs = [ final.erofs-utils ]; } ''
       mkdir -p rootfs/run/opengl-driver
@@ -20,10 +20,19 @@ let
   };
 
   inputs = import ./inputs.nix;
+  inherit (inputs) nixpkgs-muvm;
   nixos-apple-silicon-overlay = import "${inputs.nixos-apple-silicon}/apple-silicon-support/packages/overlay.nix";
+
+  # Overlay which applies changes from https://github.com/NixOS/nixpkgs/pull/397932
+  muvm-overlay = final: prev: {
+    libkrunfw = final.callPackage "${nixpkgs-muvm}/pkgs/by-name/li/libkrunfw/package.nix" {};
+    libkrun = final.callPackage "${nixpkgs-muvm}/pkgs/by-name/li/libkrun/package.nix" {};
+    muvm = final.callPackage "${nixpkgs-muvm}/pkgs/by-name/mu/muvm/package.nix" {};
+  };
 
   overlays = [
     nixos-apple-silicon-overlay
+    muvm-overlay
     overlay
   ];
 in

@@ -7,6 +7,10 @@
       url = "github:yuyuyureka/nixos-apple-silicon/minimize-patches";
       flake = false;
     };
+    nixpkgs-muvm = {
+      url = "github:NixOS/nixpkgs?ref=refs/pull/397932/head";
+      flake = false;
+    };
     __flake-compat = {
       url = "git+https://git.lix.systems/lix-project/flake-compat.git";
       flake = false;

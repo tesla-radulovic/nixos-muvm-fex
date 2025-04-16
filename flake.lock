@@ -67,6 +67,23 @@
         "type": "github"
       }
     },
+    "nixpkgs-muvm": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1744376174,
+        "narHash": "sha256-uC1uNC2qVgAEKsLFEFtm3c+PUsDGr3vKgAKZ/wPjx1o=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "f12ae3e3212fb87d4829a843a7cedba13298aa68",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "refs/pull/397932/head",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs_2": {
       "locked": {
         "lastModified": 1742288794,
@@ -87,7 +104,8 @@
       "inputs": {
         "__flake-compat": "__flake-compat",
         "nixos-apple-silicon": "nixos-apple-silicon",
-        "nixpkgs": "nixpkgs_2"
+        "nixpkgs": "nixpkgs_2",
+        "nixpkgs-muvm": "nixpkgs-muvm"
       }
     }
   },

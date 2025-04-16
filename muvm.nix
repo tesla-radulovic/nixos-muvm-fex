@@ -1,17 +1,9 @@
-# Based on https://github.com/NixOS/nixpkgs/pull/347792/commits/3998e8369521ffc6e89acc9518925504eac0e4e9
 {
   lib,
+  muvm,
   stdenv,
-  fetchFromGitHub,
-  rustPlatform,
-  libkrun,
-  makeBinaryWrapper,
   passt,
   dhcpcd,
-  systemd,
-  udev,
-  pkg-config,
-  procps,
   socat,
   coreutils,
   fex,
@@ -75,59 +67,9 @@ let
   );
 in
 assert lib.assertMsg (withFex -> stdenv.isAarch64) "FEX only support aarch64 hosts";
-rustPlatform.buildRustPackage rec {
-  pname = "muvm";
-  version = "0.3.1-unstable-16-03-2025";
-
-  src = fetchFromGitHub {
-    owner = "AsahiLinux";
-    repo = pname;
-    rev = "refs/pull/158/merge";
-    hash = "sha256-c7koZaYUZT5/Q+29fLHDRf6bXsnGkq2464sXp20buKA=";
-  };
-
-  useFetchCargoVendor = true;
-  cargoHash = "sha256-aF7R8YpygU4zevKrV8hZBTO6vah4ZtqU9hUI+8OBk4E=";
-
-  postPatch = ''
-    substituteInPlace crates/muvm/src/guest/bin/muvm-guest.rs \
-      --replace-fail "/usr/lib/systemd/systemd-udevd" "${systemd}/lib/systemd/systemd-udevd"
-      
-    substituteInPlace crates/muvm/src/monitor.rs \
-      --replace-fail "/sbin/sysctl" "${procps}/bin/sysctl"
-
-    substituteInPlace crates/muvm/src/guest/mount.rs \
-      --replace-fail "/usr/share/fex-emu" "${fex}/share/fex-emu"
-  '';
-
-  nativeBuildInputs = [
-    rustPlatform.bindgenHook
-    makeBinaryWrapper
-    pkg-config
-  ];
-
-  buildInputs = [
-    (libkrun.override {
-      withBlk = true;
-      withGpu = true;
-      withNet = true;
-    })
-    udev
-  ];
-
+muvm.overrideAttrs {
+  # Replace nixpkgs wrapper with ours
   postFixup = ''
     wrapProgram $out/bin/muvm ${wrapperArgs}
   '';
-
-  meta = {
-    description = "Run programs from your system in a microVM";
-    homepage = "https://github.com/AsahiLinux/muvm";
-    license = lib.licenses.mit;
-    maintainers = with lib.maintainers; [ nrabulinski ];
-    platforms = [
-      "aarch64-linux"
-      "x86_64-linux"
-    ];
-    mainProgram = "muvm";
-  };
 }
