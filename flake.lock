@@ -70,11 +70,11 @@
     "nixpkgs-muvm": {
       "flake": false,
       "locked": {
-        "lastModified": 1744376174,
-        "narHash": "sha256-uC1uNC2qVgAEKsLFEFtm3c+PUsDGr3vKgAKZ/wPjx1o=",
+        "lastModified": 1744840488,
+        "narHash": "sha256-VNACrnie5KEw4NF/GtXBFifSS94T5YqUQ55GcO6q9YI=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "f12ae3e3212fb87d4829a843a7cedba13298aa68",
+        "rev": "6682377fd45abd7851775f18b315e66507e1773a",
         "type": "github"
       },
       "original": {
