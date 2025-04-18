@@ -8,7 +8,6 @@ let
       };
       mesonFlags = old.mesonFlags ++ [ (final.lib.mesonOption "drm-renderers" "asahi-experimental") ];
     });
-    libkrun = final.callPackage ./libkrun.nix { };
     mesa-asahi-edge = final.callPackage ./mesa.nix { inherit (prev) mesa-asahi-edge; };
     muvm = final.callPackage ./muvm.nix { inherit (prev) muvm; mesa-x86_64-linux = final.pkgsCross.gnu64.mesa-asahi-edge; };
     fex = final.callPackage ./fex.nix { };

@@ -23,14 +23,15 @@
       ...
     }:
     let
-      pkgs = nixpkgs.legacyPackages.aarch64-linux;
+      system = "aarch64-linux";
+      pkgs = nixpkgs.legacyPackages.${system};
       overlay = import ./overlay.nix;
       pkgs' = pkgs.extend overlay;
     in
     {
       overlays.default = overlay;
 
-      packages.aarch64-linux = {
+      packages.${system} = {
         inherit (pkgs')
           mesa-asahi-edge
           muvm
