@@ -1,6 +1,5 @@
 {
   lib,
-  fetchFromGitHub,
   muvm,
   stdenv,
   passt,
@@ -69,13 +68,6 @@ let
 in
 assert lib.assertMsg (withFex -> stdenv.isAarch64) "FEX only support aarch64 hosts";
 muvm.overrideAttrs {
-  src = fetchFromGitHub {
-    owner = "nrabulinski";
-    repo = "muvm";
-    rev = "cc0f0662679a81185b8467efef4347cd7a686c31";
-    hash = "sha256-97kqN1inDNRXkWuXMm1FquO8e0xvWn/sLTGDJuq4pkw=";
-  };
-
   # Replace nixpkgs wrapper with ours
   postFixup = ''
     wrapProgram $out/bin/muvm ${wrapperArgs}
