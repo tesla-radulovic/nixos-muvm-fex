@@ -30,7 +30,7 @@ llvmPackages.stdenv.mkDerivation (finalAttrs: rec {
     repo = "FEX";
     tag = "FEX-${version}";
     # hash = "sha256-NnYod6DeRv3/6h8SGkGYtgC+RRuIafxoQm3j1Sqk0mU=";
-    hash = "sha256-My/bJROoQtD38sv6UJtel3u7SDSvj0nzMjaafY78F7E=";
+    # hash = "sha256-My/bJROoQtD38sv6UJtel3u7SDSvj0nzMjaafY78F7E=";
     fetchSubmodules = true;
   };
 
