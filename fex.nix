@@ -31,6 +31,7 @@ llvmPackages.stdenv.mkDerivation (finalAttrs: rec {
     tag = "FEX-${version}";
     # hash = "sha256-NnYod6DeRv3/6h8SGkGYtgC+RRuIafxoQm3j1Sqk0mU=";
     # hash = "sha256-My/bJROoQtD38sv6UJtel3u7SDSvj0nzMjaafY78F7E=";
+    hash = "sha256-5XqWhjGwtgmlzfZnA94jSQBnwZHUY4gz+U6rX1c61Z4=";
     fetchSubmodules = true;
   };
 
